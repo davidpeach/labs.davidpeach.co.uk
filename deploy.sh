@@ -9,5 +9,6 @@ git checkout production
 git merge main
 
 git push origin production
+git push mirror production
 
 git checkout main
