@@ -10,4 +10,9 @@ class WelcomeController extends Controller
     {
     	return view('welcome');
     }
+
+    public function testing()
+    {
+    	return 'Woot woot it works!';
+    }
 }
