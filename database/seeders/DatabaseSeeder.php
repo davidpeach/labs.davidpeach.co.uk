@@ -13,6 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $user = \App\Models\User::factory()->create([
+        	'name' => env('MY_NAME'),
+        	'email' => env('MY_EMAIL'),
+        	'password' => bcrypt(env('MY_PASSWORD')),
+        ]);
+
+        $token = $user->createToken('testing-token');
+        \Log::info('Testing token: ' . $token->plainTextToken);
     }
 }
