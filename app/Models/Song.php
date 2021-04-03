@@ -13,4 +13,9 @@ class Song extends Model
     {
     	return $this->belongsTo(Album::class);
     }
+
+    public function jams()
+    {
+    	return $this->morphMany(Jam::class, 'jamable');
+    }
 }

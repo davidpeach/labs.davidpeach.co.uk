@@ -22,4 +22,9 @@ class Jam extends Model
     {
     	return $this->belongsTo(Song::class);
     }
+
+    public function jamable()
+    {
+    	return $this->morphTo();
+    }
 }

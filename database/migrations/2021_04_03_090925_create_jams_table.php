@@ -15,7 +15,8 @@ class CreateJamsTable extends Migration
     {
         Schema::create('jams', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('song_id');
+            $table->unsignedInteger('jamable_id');
+            $table->string('jamable_type');
             $table->timestamp('published_at');
             $table->timestamps();
         });

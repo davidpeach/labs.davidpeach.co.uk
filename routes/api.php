@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AlbumJamController;
 use App\Http\Controllers\Api\JamsController;
+use App\Http\Controllers\Api\SongJamController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
@@ -21,7 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('jams/all', [JamsController::class, 'index']);
-Route::post('jams', [JamsController::class, 'store']);
+Route::post('jams/songs', [SongJamController::class, 'store']);
+Route::post('jams/albums', [AlbumJamController::class, 'store']);
 
 
 

@@ -6,6 +6,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class JamResource extends JsonResource
 {
+    private $types = [
+        'App\Models\Song' => 'toSongJamArray',
+        'App\Models\Album' => 'toAlbumJamArray',
+    ];
+
     /**
      * Transform the resource into an array.
      *
@@ -14,11 +19,29 @@ class JamResource extends JsonResource
      */
     public function toArray($request)
     {
+        $type = $this->jamable_type;
+
+        return call_user_func_array([$this, $this->types[$type]], []);
+    }
+
+    private function toSongJamArray()
+    {
         return [
-            'song' => $this->song->title,
-            'artist' => $this->song->album->artist->name,
-            'album' => $this->song->album->title,
+            'subject' => $this->jamable->title,
+            'artist' => $this->jamable->album->artist->name,
+            'album' => $this->jamable->album->title,
             'published_at' => $this->published_at->format('Y-m-d'),
+            'type' => 'song',
+        ];
+    }
+
+    private function toAlbumJamArray()
+    {
+        return [
+            'subject' => $this->jamable->title,
+            'artist' => $this->jamable->artist->name,
+            'published_at' => $this->published_at->format('Y-m-d'),
+            'type' => 'album',
         ];
     }
 }

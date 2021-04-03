@@ -17,9 +17,10 @@ class JamsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function it_can_return_all_jams_grouped_by_date_order_newest_to_oldest()
+    public function it_can_return_all_jams_of_either_albums_or_songs_grouped_by_date_order_newest_to_oldest()
     {
-        // Given I have two jams at different dates.
+        // Given I have two jams at different dates...
+        // ... One which is a "song" jam...
         Jam::factory()
             ->for(
                 Song::factory()
@@ -31,22 +32,21 @@ class JamsTest extends TestCase
                     )
                     ->create(['title' => 'Baby one more time'])
                 )
-                ->create(['title' => 'Baby one more time'])
+                ->create(['title' => 'Baby one more time']),
+                'jamable'
             )
             ->create(['published_at' => new Carbon('5th January 2021')]);
 
+        // ... And another which is an "album" jam.
         Jam::factory()
             ->for(
-                Song::factory()
+                Album::factory()
                 ->for(
-                    Album::factory()
-                    ->for(
-                        Artist::factory()
-                        ->create(['name' => 'Cradle of Filth'])
-                    )
-                    ->create(['title' => 'Nymphetamine'])
+                    Artist::factory()
+                    ->create(['name' => 'Cradle of Filth'])
                 )
-                ->create(['title' => 'Gabrielle'])
+                ->create(['title' => 'Nymphetamine']),
+                'jamable'
             )
             ->create(['published_at' => new Carbon('10th January 2021')]);
 
@@ -60,17 +60,18 @@ class JamsTest extends TestCase
                     'album' => 'Baby one more time',
                     'artist' => 'Britney Spears',
                     'published_at' => '2021-01-05',
-                    'song' => 'Baby one more time',
+                    'subject' => 'Baby one more time',
+                    'type'=> 'song',
                 ],
             ]]);
 
         $response->assertJsonFragment([
             '2021-01-10' => [
                 [
-                    'album' => 'Nymphetamine',
+                    'subject' => 'Nymphetamine',
                     'artist' => 'Cradle of Filth',
                     'published_at' => '2021-01-10',
-                    'song' => 'Gabrielle',
+                    'type'=> 'album',
                 ],
             ],
         ], $response->getData());
@@ -89,14 +90,39 @@ class JamsTest extends TestCase
         $publishedAt = new Carbon('25th December 2020');
 
         // When I "jam" it
-        $this->post('api/jams', [
+        $this->post('api/jams/songs', [
             'song_id' => $song->id,
             'published_at' => $publishedAt->format('Y-m-d h:i'),
         ]);
 
         // Then it should show up in the jams table
         $this->assertDatabaseHas('jams', [
-            'song_id' => $song->id,
+            'jamable_id' => $song->id,
+            'jamable_type' => 'App\Models\Song',
+            'published_at' => $publishedAt->format('Y-m-d h:i:s'),
+        ]);
+    }
+
+    /** @test */
+    public function a_jam_can_be_created_for_an_album()
+    {
+        $this->w();
+        // Given I have a song
+        $album = Album::factory()->create([
+            'title' => 'The bestest album',
+        ]);
+        $publishedAt = new Carbon('25th December 2020');
+
+        // When I "jam" it
+        $this->post('api/jams/albums', [
+            'album_id' => $album->id,
+            'published_at' => $publishedAt->format('Y-m-d h:i'),
+        ]);
+
+        // Then it should show up in the jams table
+        $this->assertDatabaseHas('jams', [
+            'jamable_id' => $album->id,
+            'jamable_type' => 'App\Models\Album',
             'published_at' => $publishedAt->format('Y-m-d h:i:s'),
         ]);
     }
