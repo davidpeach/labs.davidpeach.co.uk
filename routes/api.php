@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,9 @@ Route::middleware('web')->post('login', function (Request $request) {
 	$creds = $request->only('email', 'password');
 
 	if (! auth()->attempt($creds)) {
-		dd('NOPE');
+		throw ValidationException::withMessages([
+			'email' => 'Unknown person.',
+		]);
 	}
 
 	$request->session()->regenerate();
