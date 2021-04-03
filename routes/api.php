@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\JamsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
@@ -18,6 +19,10 @@ use Illuminate\Validation\ValidationException;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('jams/all', [JamsController::class, 'index']);
+
+
 
 Route::middleware('web')->post('login', function (Request $request) {
 	$creds = $request->only('email', 'password');
