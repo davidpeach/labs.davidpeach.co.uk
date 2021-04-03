@@ -17,3 +17,24 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware('web')->post('login', function (Request $request) {
+	$creds = $request->only('email', 'password');
+
+	if (! auth()->attempt($creds)) {
+		dd('NOPE');
+	}
+
+	$request->session()->regenerate();
+
+	return response()->json(null, 201);
+});
+
+Route::middleware('web')->post('logout', function (Request $request) {
+	auth()->guard('web')->logout();
+
+	$request->session()->invalidate();
+	$request->session()->regenerateToken();
+
+	return response()->json(null, 200);
+});
