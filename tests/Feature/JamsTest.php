@@ -78,4 +78,26 @@ class JamsTest extends TestCase
         // ... And they should returned as the newest first.
         $response->assertSeeTextInOrder(['2021-01-10', '2021-01-05']);
     }
+
+    /** @test */
+    public function a_jam_can_be_created_for_a_song()
+    {
+        // Given I have a song
+        $song = Song::factory()->create([
+            'title' => 'The first song',
+        ]);
+        $publishedAt = new Carbon('25th December 2020');
+
+        // When I "jam" it
+        $this->post('api/jams', [
+            'song_id' => $song->id,
+            'published_at' => $publishedAt->format('Y-m-d h:i'),
+        ]);
+
+        // Then it should show up in the jams table
+        $this->assertDatabaseHas('jams', [
+            'song_id' => $song->id,
+            'published_at' => $publishedAt->format('Y-m-d h:i:s'),
+        ]);
+    }
 }

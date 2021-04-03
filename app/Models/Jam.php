@@ -9,6 +9,11 @@ class Jam extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+    	'song_id',
+    	'published_at',
+    ];
+
     protected $dates = [
     	'published_at',
     ];

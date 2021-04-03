@@ -14,4 +14,12 @@ class JamsController extends Controller
     {
     	return new JamCollection(Jam::orderBy('published_at', 'desc')->get());
     }
+
+    public function store(Request $request)
+    {
+    	Jam::create([
+    		'song_id' => $request->get('song_id'),
+    		'published_at' => $request->get('published_at'),
+    	]);
+    }
 }

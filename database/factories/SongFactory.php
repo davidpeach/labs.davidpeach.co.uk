@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Album;
 use App\Models\Song;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,7 +23,9 @@ class SongFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'album_id' => function () {
+                return Album::factory()->create()->id;
+            }
         ];
     }
 }
