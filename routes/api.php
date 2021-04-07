@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AlbumJamController;
 use App\Http\Controllers\Api\JamsController;
+use App\Http\Controllers\Api\SongController;
 use App\Http\Controllers\Api\SongJamController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,7 +27,7 @@ Route::get('jams/all', [JamsController::class, 'index']);
 Route::post('jams/songs', [SongJamController::class, 'store']);
 Route::post('jams/albums', [AlbumJamController::class, 'store']);
 
-
+Route::get('songs', [SongController::class, 'index']);
 
 Route::middleware('web')->post('login', function (Request $request) {
 	$creds = $request->only('email', 'password');
