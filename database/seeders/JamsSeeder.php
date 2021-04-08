@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Jam;
 use App\Models\Song;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
@@ -25,5 +26,19 @@ class JamsSeeder extends Seeder
         		['title' => 'Not a great track'],
         	))
         	->create();
+
+        $songs = Song::all();
+        $publishedAt = now();
+
+        $songs->each(function ($song) use ($publishedAt){
+            $publishedAt->subDays(1);
+            $jams = Jam::factory()->times(5)->make([
+                'published_at' => $publishedAt,
+            ]);
+
+            $jams->each(function ($jam) use ($song) {
+                $song->jams()->save($jam);
+            });
+        });
     }
 }
