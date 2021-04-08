@@ -25,7 +25,8 @@ class SongFactory extends Factory
         return [
             'album_id' => function () {
                 return Album::factory()->create()->id;
-            }
+            },
+            'title' => $this->faker->sentence,
         ];
     }
 }
