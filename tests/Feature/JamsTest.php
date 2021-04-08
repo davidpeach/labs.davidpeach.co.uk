@@ -6,6 +6,7 @@ use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Jam;
 use App\Models\Song;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -83,6 +84,8 @@ class JamsTest extends TestCase
     /** @test */
     public function a_jam_can_be_created_for_a_song()
     {
+        $this->be(User::factory()->create());
+
         // Given I have a song
         $song = Song::factory()->create([
             'title' => 'The first song',
@@ -101,6 +104,23 @@ class JamsTest extends TestCase
             'jamable_type' => 'App\Models\Song',
             'published_at' => $publishedAt->format('Y-m-d h:i:s'),
         ]);
+    }
+
+    /** @test */
+    public function published_at_will_default_to_current_timestamp_when_jamming_a_song()
+    {
+        $this->be(User::factory()->create());
+        $song = Song::factory()->create();
+        $now = now();
+        $this->travelTo($now->subDays(1)->startOfMinute());
+
+        $this->json('POST', '/api/jams/songs', [
+            'song_id' => $song->id,
+        ]);
+
+        $newJam = Jam::first();
+        $this->assertEquals($song->id, $newJam->jamable->id);
+        $this->assertEquals($now, $newJam->published_at);
     }
 
     /** @test */

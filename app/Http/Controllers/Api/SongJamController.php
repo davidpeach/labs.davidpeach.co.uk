@@ -14,7 +14,7 @@ class SongJamController extends Controller
     	$song = Song::find($request->get('song_id'));
 
     	$jam = Jam::make([
-    		'published_at' => $request->get('published_at'),
+    		'published_at' => $request->get('published_at') ?? now(),
     	]);
 
     	$song->jams()->save($jam);
