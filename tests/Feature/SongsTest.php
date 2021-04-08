@@ -41,16 +41,20 @@ class SongsTest extends TestCase
 
         $response->assertJson(['data' => [
             [
+                'text' => 'Baby baby by An Artist',
                 'title' => 'Baby baby',
                 'album' => 'Some Album',
                 'artist' => 'An Artist',
-                'id' => $songB->id,
+                'value' => $songB->id,
+                'disabled' => false,
             ],
             [
+                'text' => 'Baby one more time by Britney Spears',
                 'title' => 'Baby one more time',
                 'album' => 'Baby one more time',
                 'artist' => 'Britney Spears',
-                'id' => $songA->id,
+                'value' => $songA->id,
+                'disabled' => false,
             ],
         ]]);
     }

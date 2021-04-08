@@ -15,10 +15,12 @@ class SongResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'text' => $this->title . ' by ' . $this->album->artist->name,
             'album' => $this->album->title,
             'artist' => $this->album->artist->name,
-            'id' => $this->id,
+            'value' => $this->id,
             'title' => $this->title,
+            'disabled' => false,
         ];
     }
 }
