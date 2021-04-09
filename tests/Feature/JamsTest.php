@@ -82,7 +82,7 @@ class JamsTest extends TestCase
     }
 
     /** @test */
-    public function a_jam_can_be_created_for_a_song()
+    public function a_jam_can_be_created_for_an_existing_song()
     {
         $this->be(User::factory()->create());
 
@@ -103,6 +103,38 @@ class JamsTest extends TestCase
             'jamable_id' => $song->id,
             'jamable_type' => 'App\Models\Song',
             'published_at' => $publishedAt->format('Y-m-d h:i:s'),
+        ]);
+    }
+
+    /** @test */
+    public function a_jam_can_be_created_for_a_new_song()
+    {
+        $this->w();
+        $this->be(User::factory()->create());
+
+        // Given I have an album
+
+        $album = Album::factory()->create([
+            'title' => 'Baby one more time',
+        ]);
+
+        // When I "jam" it
+        $this->post('api/jams/songs', [
+            'song_title' => '(You drive me) Crazy',
+            'album_id' => $album->id,
+        ]);
+
+        $this->assertDatabaseHas('songs', [
+            'title' => '(You drive me) Crazy',
+            'album_id' => $album->id,
+        ]);
+
+        $newSong = Song::first();
+
+        // Then it should show up in the jams table
+        $this->assertDatabaseHas('jams', [
+            'jamable_id' => $newSong->id,
+            'jamable_type' => 'App\Models\Song',
         ]);
     }
 

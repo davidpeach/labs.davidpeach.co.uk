@@ -9,6 +9,10 @@ class Album extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+    ];
+
     public function artist()
     {
     	return $this->belongsTo(Artist::class);
@@ -17,5 +21,10 @@ class Album extends Model
     public function jams()
     {
     	return $this->morphMany(Jam::class, 'jamable');
+    }
+
+    public function songs()
+    {
+    	return $this->hasMany(Song::class);
     }
 }

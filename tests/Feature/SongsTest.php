@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Song;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -41,21 +42,73 @@ class SongsTest extends TestCase
 
         $response->assertJson(['data' => [
             [
-                'text' => 'Baby baby by An Artist',
-                'title' => 'Baby baby',
-                'album' => 'Some Album',
-                'artist' => 'An Artist',
+                'text' => 'Baby baby',
                 'value' => $songB->id,
-                'disabled' => false,
+
+                'album' => [
+                    'text' => 'Some Album',
+                    'value' => 2,
+
+                    'artist' => [
+                        'text' => 'An Artist',
+                        'value' => 2,
+                    ],
+                ],
             ],
             [
-                'text' => 'Baby one more time by Britney Spears',
-                'title' => 'Baby one more time',
-                'album' => 'Baby one more time',
-                'artist' => 'Britney Spears',
+                'text' => 'Baby one more time',
                 'value' => $songA->id,
                 'disabled' => false,
+
+                'album' => [
+                    'text' => 'Baby one more time',
+                    'value' => 1,
+
+                    'artist' => [
+                        'text' => 'Britney Spears',
+                        'value' => 1,
+                    ],
+                ],
             ],
         ]]);
+    }
+
+    /** @test */
+    public function songs_can_be_created_for_an_album()
+    {
+        $this->w();
+        $this->be(User::factory()->create());
+        $album = Album::factory()
+            ->for(Artist::factory()->create([
+                'name' => 'Britney Spears',
+            ]))
+            ->create(['title' => 'Baby one more time']);
+
+        $response = $this->json('POST', 'api/songs', [
+            'title' => 'Sometimes',
+            'album_id' => $album->id
+        ]);
+
+        $song = Song::first();
+        $this->assertDatabaseHas('songs', [
+            'title' => 'Sometimes',
+            'album_id' => $album->id,
+        ]);
+
+        $response->assertJson(['data' => [
+            'text' => 'Sometimes',
+            'value' => $song->id,
+            'disabled' => false,
+            'album' => [
+                'text' => 'Baby one more time',
+                'value' => $album->id,
+                'artist' => [
+                    'text' => 'Britney Spears',
+                    'value' => 1,
+                ],
+            ],
+        ]]);
+
+        $this->assertEquals('Baby one more time', $song->album->title);
     }
 }

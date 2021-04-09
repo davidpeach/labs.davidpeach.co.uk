@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AlbumController;
 use App\Http\Controllers\Api\AlbumJamController;
+use App\Http\Controllers\Api\ArtistController;
 use App\Http\Controllers\Api\JamsController;
 use App\Http\Controllers\Api\SongController;
 use App\Http\Controllers\Api\SongJamController;
@@ -28,6 +30,14 @@ Route::middleware('auth:sanctum')->post('jams/songs', [SongJamController::class,
 Route::post('jams/albums', [AlbumJamController::class, 'store']);
 
 Route::get('songs', [SongController::class, 'index']);
+Route::middleware('auth:sanctum')->post('songs', [SongController::class, 'store']);
+
+Route::get('albums', [AlbumController::class, 'index']);
+Route::middleware('auth:sanctum')->post('albums', [AlbumController::class, 'store']);
+
+Route::get('artists', [ArtistController::class, 'index']);
+Route::middleware('auth:sanctum')->post('artists', [ArtistController::class, 'store']);
+
 
 Route::middleware('web')->post('login', function (Request $request) {
 	$creds = $request->only('email', 'password');
