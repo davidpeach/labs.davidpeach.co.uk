@@ -25,17 +25,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('jams/all', [JamsController::class, 'index']);
+Route::middleware('auth:sanctum')->get('jams/all', [JamsController::class, 'index']);
 Route::middleware('auth:sanctum')->post('jams/songs', [SongJamController::class, 'store']);
-Route::post('jams/albums', [AlbumJamController::class, 'store']);
+Route::middleware('auth:sanctum')->post('jams/albums', [AlbumJamController::class, 'store']);
 
-Route::get('songs', [SongController::class, 'index']);
+Route::middleware('auth:sanctum')->get('songs', [SongController::class, 'index']);
 Route::middleware('auth:sanctum')->post('songs', [SongController::class, 'store']);
 
-Route::get('albums', [AlbumController::class, 'index']);
+Route::middleware('auth:sanctum')->get('albums', [AlbumController::class, 'index']);
 Route::middleware('auth:sanctum')->post('albums', [AlbumController::class, 'store']);
 
-Route::get('artists', [ArtistController::class, 'index']);
+Route::middleware('auth:sanctum')->get('artists', [ArtistController::class, 'index']);
 Route::middleware('auth:sanctum')->post('artists', [ArtistController::class, 'store']);
 
 

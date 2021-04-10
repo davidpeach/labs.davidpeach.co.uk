@@ -16,6 +16,8 @@ class ArtistsTest extends TestCase
     /** @test */
     public function artists_can_be_searched_for_alphabetically_by_name()
     {
+        $this->be(User::factory()->create());
+
         $artistCradle = Artist::factory()->create(['name' => 'Cradle of Filth']);
         $artistBritney = Artist::factory()->create(['name' => 'Britney Spears']);
 

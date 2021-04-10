@@ -16,6 +16,8 @@ class AlbumsTest extends TestCase
     /** @test */
     public function albums_can_be_searched_for_alphabetically_by_title()
     {
+        $this->be(User::factory()->create());
+
         $artist = Artist::factory()->create(['name' => 'Cradle of Filth']);
 
         $albumA = Album::factory()->for($artist)->create([

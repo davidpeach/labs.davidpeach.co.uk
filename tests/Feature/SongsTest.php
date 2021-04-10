@@ -16,6 +16,8 @@ class SongsTest extends TestCase
     /** @test */
     public function songs_can_be_searched_for_by_title_returned_alphabetically()
     {
+        $this->be(User::factory()->create());
+
         $songA = Song::factory()
             ->for(
                 Album::factory()

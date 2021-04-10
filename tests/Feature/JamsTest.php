@@ -20,6 +20,7 @@ class JamsTest extends TestCase
     /** @test */
     public function it_can_return_all_jams_of_either_albums_or_songs_grouped_by_date_order_newest_to_oldest()
     {
+        $this->be(User::factory()->create());
         // Given I have two jams at different dates...
         // ... One which is a "song" jam...
         Jam::factory()
@@ -158,7 +159,8 @@ class JamsTest extends TestCase
     /** @test */
     public function a_jam_can_be_created_for_an_album()
     {
-        $this->w();
+        $this->be(User::factory()->create());
+
         // Given I have a song
         $album = Album::factory()->create([
             'title' => 'The bestest album',
