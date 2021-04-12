@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AlbumController;
 use App\Http\Controllers\Api\AlbumJamController;
 use App\Http\Controllers\Api\ArtistController;
+use App\Http\Controllers\Api\GamePlaythroughController;
 use App\Http\Controllers\Api\JamsController;
 use App\Http\Controllers\Api\SongController;
 use App\Http\Controllers\Api\SongJamController;
@@ -38,6 +39,7 @@ Route::middleware('auth:sanctum')->post('albums', [AlbumController::class, 'stor
 Route::middleware('auth:sanctum')->get('artists', [ArtistController::class, 'index']);
 Route::middleware('auth:sanctum')->post('artists', [ArtistController::class, 'store']);
 
+Route::get('games/{game}/playthroughs/{playthrough}', [GamePlaythroughController::class, 'show']);
 
 Route::middleware('web')->post('login', function (Request $request) {
 	$creds = $request->only('email', 'password');
