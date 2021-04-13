@@ -17,6 +17,9 @@ class CreateActivitiesTable extends Migration
             $table->id();
             $table->string('activityable_type');
             $table->bigInteger('activityable_id');
+            $table->string('title');
+            $table->boolean('is_complete');
+            $table->timestamp('last_actioned_at')->nullable();
             $table->timestamps();
         });
     }

@@ -17,7 +17,7 @@ class CreateActivityPartsTable extends Migration
             $table->id();
             $table->bigInteger('activity_id');
             $table->timestamp('started_at');
-            $table->timestamp('finished_at');
+            $table->timestamp('finished_at')->nullable();
             $table->timestamps();
         });
     }

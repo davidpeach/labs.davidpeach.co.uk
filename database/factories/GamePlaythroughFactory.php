@@ -22,7 +22,8 @@ class GamePlaythroughFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'title' => $this->faker->sentence,
+            'is_complete' => false,
         ];
     }
 }

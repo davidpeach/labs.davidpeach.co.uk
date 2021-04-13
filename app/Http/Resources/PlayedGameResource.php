@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\GamePlayedPlaythroughResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GamingSessionResource extends JsonResource
+class PlayedGameResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,8 +16,10 @@ class GamingSessionResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'started_at' => $this->started_at->format('jS F Y g:ia'),
-            'finished_at' => $this->finished_at ? $this->finished_at->format('jS F Y g:ia'): null,
+            'title' => $this->title,
+            'capture_count' => 0,
+            'playthrough_count' => 0,
+            'playthroughs' => GamePlayedPlaythroughResource::collection($this->playthroughs)
         ];
     }
 }
