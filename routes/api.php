@@ -43,8 +43,9 @@ Route::middleware('auth:sanctum')->post('artists', [ArtistController::class, 'st
 
 Route::get('games/{game}/playthroughs/{playthrough}', [GamePlaythroughController::class, 'show']);
 Route::get('games', [GameController::class, 'index']);
+Route::middleware('auth:sanctum')->post('games', [GameController::class, 'store']);
 
-Route::post('games/{game}/playthroughs/{playthrough}/sessions', [GamePlaythroughSessionController::class, 'store']);
+Route::middleware('auth:sanctum')->post('games/{game}/playthroughs/{playthrough}/sessions', [GamePlaythroughSessionController::class, 'store']);
 
 
 

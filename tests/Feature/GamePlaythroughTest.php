@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Game;
 use App\Models\GamePlaythrough;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -15,6 +16,8 @@ class GamePlaythroughTest extends TestCase
     /** @test */
     public function a_playthrough_will_update_its_last_actioned_at_when_a_new_gaming_session_is_saved()
     {
+        $this->be(User::factory()->create());
+
         $game = Game::factory()->create();
         $playthrough = GamePlaythrough::factory()->for($game)->create([
             'last_actioned_at' => '2021-01-01 18:30:00'

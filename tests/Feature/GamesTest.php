@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Game;
 use App\Models\GamePlaythrough;
 use App\Models\GamingSession;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -13,6 +14,30 @@ use Tests\TestCase;
 class GamesTest extends TestCase
 {
     use RefreshDatabase;
+
+    /** @test */
+    public function new_games_can_be_created_by_me()
+    {
+        $this->be(User::factory()->create());
+
+        $this->json('POST', 'api/games', [
+            'title' => 'The Last of Us',
+        ]);
+
+        $this->assertDatabaseHas('games', [
+            'title' => 'The Last of Us',
+        ]);
+    }
+
+    /** @test */
+    public function guests_cannot_create_games()
+    {
+        $response = $this->json('POST', 'api/games', [
+            'title' => 'The Last of Us',
+        ]);
+
+        $response->assertUnauthorized();
+    }
 
     /** @test */
     public function i_can_get_all_games_that_i_have_played_at_least_once_in_reverse_order_they_were_played()

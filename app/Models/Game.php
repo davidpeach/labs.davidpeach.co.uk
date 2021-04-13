@@ -9,8 +9,12 @@ class Game extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+    ];
+
     public function playthroughs()
     {
-    	return $this->morphMany(GamePlaythrough::class, 'activityable');
+        return $this->morphMany(GamePlaythrough::class, 'activityable');
     }
 }

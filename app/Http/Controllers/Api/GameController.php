@@ -22,4 +22,11 @@ class GameController extends Controller
 
         return PlayedGameResource::collection($games);
     }
+
+    public function store(Request $request)
+    {
+        Game::create([
+            'title' => $request->title,
+        ]);
+    }
 }
