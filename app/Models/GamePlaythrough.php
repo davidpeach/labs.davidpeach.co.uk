@@ -17,15 +17,15 @@ class GamePlaythrough extends Activity
         'last_actioned_at',
     ];
 
-	/**
-	 * A single playthrough of a Game can be split over multiple sessions.
-	 * Especially if it's Persona 5!
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
+    /**
+     * A single playthrough of a Game can be split over multiple sessions.
+     * Especially if it's Persona 5!
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function sessions(): HasMany
     {
-    	return $this->activityParts(GamingSession::class);
+        return $this->activityParts(GamingSession::class);
     }
 
     /**
@@ -35,7 +35,7 @@ class GamePlaythrough extends Activity
      */
     public function game(): BelongsTo
     {
-    	return $this->owner(Game::class);
+        return $this->owner(Game::class);
     }
 
     public function getDetermineStartedAtAttribute()
