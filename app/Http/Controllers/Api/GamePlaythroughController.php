@@ -18,6 +18,8 @@ class GamePlaythroughController
 	 */
     public function show(Game $game, GamePlaythrough $playthrough): JsonResource
     {
-    	return new GamePlaythroughResource($playthrough);
+    	return new GamePlaythroughResource($playthrough->load('sessions')->loadMorph('game', [
+    		GamePlaythrough::class => 'playthroughs',
+    	]));
     }
 }

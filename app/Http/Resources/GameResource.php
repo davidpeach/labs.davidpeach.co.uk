@@ -15,7 +15,12 @@ class GameResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'title' => $this->title,
+            'image_path' => $this->image_path,
+            'capture_count' => 0,
+            'playthrough_count' => 0,
+            'playthroughs' => GamePlaythroughResource::collection($this->whenLoaded('playthroughs')),
         ];
     }
 }

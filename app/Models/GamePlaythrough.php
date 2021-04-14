@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class GamePlaythrough extends Activity
 {
@@ -31,9 +32,9 @@ class GamePlaythrough extends Activity
     /**
      * A playthrough will belong to a single game.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function game(): BelongsTo
+    public function game(): MorphTo
     {
         return $this->owner(Game::class);
     }

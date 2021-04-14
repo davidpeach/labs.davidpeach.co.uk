@@ -16,8 +16,14 @@ class GamePlaythroughResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'game' => new GameResource($this->game),
-            'sessions' => GamingSessionResource::collection($this->sessions),
+            'game' => new GameResource($this->whenLoaded('game')),
+            'sessions' => GamingSessionResource::collection($this->whenLoaded('sessions')),
+
+            'title' => $this->title,
+            'started_at' => $this->determine_started_at ? $this->determine_started_at->format('jS F Y g:ia'): null,
+            'finished_at' => $this->determine_finished_at ? $this->determine_finished_at->format('jS F Y g:ia'): null,
+            'last_played_at' => $this->last_played_at->format('jS F Y g:ia'),
+            'is_complete' => $this->is_complete,
         ];
     }
 }

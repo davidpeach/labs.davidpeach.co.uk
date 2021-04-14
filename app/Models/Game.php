@@ -11,6 +11,7 @@ class Game extends Model
 
     protected $fillable = [
         'title',
+        'image_path',
     ];
 
     public function playthroughs()

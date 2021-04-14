@@ -9,6 +9,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class GamesTest extends TestCase
@@ -20,13 +22,27 @@ class GamesTest extends TestCase
     {
         $this->be(User::factory()->create());
 
-        $this->json('POST', 'api/games', [
+        Storage::fake('do_spaces');
+
+        $image = UploadedFile::fake()->image('game-cover.jpg');
+
+        $response = $this->json('POST', 'api/games', [
             'title' => 'The Last of Us',
+            'image' => $image,
         ]);
 
         $this->assertDatabaseHas('games', [
             'title' => 'The Last of Us',
+            'image_path' => 'covers/' . $image->hashName(),
         ]);
+
+        Storage::disk('do_spaces')->assertExists('covers/' . $image->hashName());
+
+        $response->assertJson(['data' => [
+            'id' => 1,
+            'title' => 'The Last of Us',
+            'image_path' => 'covers/' . $image->hashName(),
+        ]]);
     }
 
     /** @test */
