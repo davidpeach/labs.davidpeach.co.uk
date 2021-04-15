@@ -11,7 +11,7 @@ class AlbumCoverController extends Controller
     public function store(Album $album, Request $request)
     {
     	$album->update([
-    		'cover_image' => $request->file('image')->store('album_covers'),
+    		'cover_image' => $request->file('image')->storePublicly('album_covers'),
     	]);
     }
 }
