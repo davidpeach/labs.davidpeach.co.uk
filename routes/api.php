@@ -1,14 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\AlbumController;
+use App\Http\Controllers\Api\AlbumCoverController;
 use App\Http\Controllers\Api\AlbumJamController;
 use App\Http\Controllers\Api\ArtistController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\GamePlaythroughController;
+use App\Http\Controllers\Api\GamePlaythroughSessionController;
 use App\Http\Controllers\Api\JamsController;
 use App\Http\Controllers\Api\SongController;
 use App\Http\Controllers\Api\SongJamController;
-use App\Http\Controllers\Api\GamePlaythroughSessionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
@@ -37,6 +38,7 @@ Route::middleware('auth:sanctum')->post('songs', [SongController::class, 'store'
 
 Route::middleware('auth:sanctum')->get('albums', [AlbumController::class, 'index']);
 Route::middleware('auth:sanctum')->post('albums', [AlbumController::class, 'store']);
+Route::middleware('auth:sanctum')->post('albums/{album}/cover', [AlbumCoverController::class, 'store']);
 
 Route::middleware('auth:sanctum')->get('artists', [ArtistController::class, 'index']);
 Route::middleware('auth:sanctum')->post('artists', [ArtistController::class, 'store']);

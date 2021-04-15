@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /** @group jams */
@@ -20,6 +21,8 @@ class JamsTest extends TestCase
     /** @test */
     public function it_can_return_all_jams_of_either_albums_or_songs_grouped_by_date_order_newest_to_oldest()
     {
+        Storage::fake('do_spaces');
+
         $this->be(User::factory()->create());
         // Given I have two jams at different dates...
         // ... One which is a "song" jam...
@@ -32,7 +35,7 @@ class JamsTest extends TestCase
                         Artist::factory()
                         ->create(['name' => 'Britney Spears'])
                     )
-                    ->create(['title' => 'Baby one more time'])
+                    ->create(['title' => 'Baby one more time', 'cover_image' => 'path/to/image.jpg'])
                 )
                 ->create(['title' => 'Baby one more time']),
                 'jamable'
@@ -64,6 +67,7 @@ class JamsTest extends TestCase
                     'published_at' => '2021-01-05',
                     'subject' => 'Baby one more time',
                     'type'=> 'song',
+                    'image' => 'http://labs.davidpeach.local/storage/path/to/image.jpg',
                 ],
             ]]);
 

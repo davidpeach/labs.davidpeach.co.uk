@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class JamResource extends JsonResource
 {
@@ -32,6 +33,7 @@ class JamResource extends JsonResource
             'album' => $this->jamable->album->title,
             'published_at' => $this->published_at->format('Y-m-d'),
             'type' => 'song',
+            'image' => Storage::url($this->jamable->album->cover_image),
         ];
     }
 

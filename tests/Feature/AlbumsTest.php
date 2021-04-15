@@ -7,6 +7,8 @@ use App\Models\Artist;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AlbumsTest extends TestCase
@@ -47,6 +49,7 @@ class AlbumsTest extends TestCase
     public function albums_can_be_created_for_an_artist()
     {
         $this->be(User::factory()->create());
+
         $artist = Artist::factory()->create([
                     'name' => 'Britney Spears',
                 ]);
@@ -73,5 +76,42 @@ class AlbumsTest extends TestCase
         ]]);
 
         $this->assertEquals('Britney Spears', $album->artist->name);
+    }
+
+    /** @test */
+    public function artwork_for_an_album_can_be_added_by_only_me()
+    {
+        $this->be(User::factory()->create());
+
+        Storage::fake('public');
+
+        $album = Album::factory()->create([
+            'title' => 'Number of the Beast',
+        ]);
+
+        $image = UploadedFile::fake()->image('album-cover.jpg');
+
+        $this->json('POST', 'api/albums/' . $album->id . '/cover', [
+            'image' => $image,
+        ]);
+
+        $this->assertEquals('album_covers/' . $image->hashName(), $album->fresh()->cover_image);
+        Storage::disk('public')->assertExists('album_covers/' . $image->hashName());
+    }
+
+    /** @test */
+    public function guests_cannot_add_artwork_for_an_album()
+    {
+        $album = Album::factory()->create([
+            'title' => 'Number of the Beast',
+        ]);
+
+        $image = UploadedFile::fake()->image('album-cover.jpg');
+
+        $response = $this->json('POST', 'api/albums/' . $album->id . '/cover', [
+            'image' => $image,
+        ]);
+
+        $response->assertUnauthorized();
     }
 }
