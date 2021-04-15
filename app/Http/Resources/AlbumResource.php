@@ -19,7 +19,7 @@ class AlbumResource extends JsonResource
             'text' => $this->title,
             'value' => $this->id,
             'artist' => new ArtistResource($this->artist),
-            'cover_image' => Storage::url($this->cover_image),
+            'cover_image' => $this->cover_image ? Storage::url($this->cover_image): '',
         ];
     }
 }
