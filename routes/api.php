@@ -53,6 +53,7 @@ Route::middleware('auth:sanctum')->post('games/{game}/cover', [GameCoverControll
 Route::middleware('auth:sanctum')->post('games/{game}/playthroughs/{playthrough}/sessions', [GamePlaythroughSessionController::class, 'store']);
 
 Route::get('playthroughs', [PlaythroughController::class, 'index']);
+Route::get('playthroughs/{playthrough}', [PlaythroughController::class, 'show']);
 
 
 Route::middleware('web')->post('login', function (Request $request) {

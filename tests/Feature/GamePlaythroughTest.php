@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Game;
 use App\Models\GamePlaythrough;
+use App\Models\GamingSession;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -35,7 +36,6 @@ class GamePlaythroughTest extends TestCase
     /** @test */
     public function playthroughs_can_be_retrieved_in_order_of_the_last_actioned_at_descending()
     {
-        $this->w();
         $lastOfUs = Game::factory()->create([
             'title' => 'The Last of Us',
             'image_path' => '/path/to/last-of-us-image.jpeg',
@@ -108,5 +108,60 @@ class GamePlaythroughTest extends TestCase
             '10th June 2020 12:00pm',
             '20th January 2020 12:00pm',
         ]);
+    }
+
+    /** @test */
+    public function a_single_playthrough_can_be_retrieved_with_all_associated_sessions()
+    {
+        $lastOfUs = Game::factory()->create([
+            'title' => 'The Last of Us',
+            'image_path' => '/path/to/last-of-us-image.jpeg',
+        ]);
+
+        $playthrough = GamePlaythrough::factory()
+            ->for($lastOfUs)
+            ->create([
+                'title' => 'Grounded Mode run #3'
+            ]);
+
+        GamingSession::factory()
+            ->for($playthrough)
+            ->count(3)
+            ->state(new Sequence(
+                [
+                    'started_at' => '2021-01-20 14:00:00',
+                    'finished_at' => '2021-01-20 16:00:00',
+                ],
+                [
+                    'started_at' => '2021-01-21 18:00:00',
+                    'finished_at' => '2021-01-21 19:30:00',
+                ],
+                [
+                    'started_at' => '2021-01-25 10:00:00',
+                    'finished_at' => '2021-01-25 14:30:00',
+                ],
+            ))
+            ->create();
+
+        $response = $this->json('GET', '/api/playthroughs/' . $playthrough->id);
+
+        $response->assertJson(['data' => [
+            'id' => $playthrough->id,
+            'title' => 'Grounded Mode run #3',
+            'sessions' => [
+                [
+                    'started_at' => '20th January 2021 2:00pm',
+                    'finished_at' => '20th January 2021 4:00pm'
+                ],
+                [
+                    'started_at' => '21st January 2021 6:00pm',
+                    'finished_at' => '21st January 2021 7:30pm'
+                ],
+                [
+                    'started_at' => '25th January 2021 10:00am',
+                    'finished_at' => '25th January 2021 2:30pm'
+                ],
+            ],
+        ]]);
     }
 }

@@ -20,4 +20,9 @@ class PlaythroughController extends Controller
             GamePlaythrough::class => 'playthroughs',
         ]));
     }
+
+    public function show(GamePlaythrough $playthrough)
+    {
+    	return new GamePlaythroughResource($playthrough->load('sessions'));
+    }
 }
