@@ -21,6 +21,13 @@ class GameController extends Controller
             ->take(1)
         )->get()->load('playthroughs');
 
+        // Filter out all games that have not yet been played.
+        if ($played) {
+            $games = $games->filter(function ($game) {
+                return ! $game->playthroughs->isEmpty();
+            });
+        }
+
         return GameResource::collection($games);
     }
 
