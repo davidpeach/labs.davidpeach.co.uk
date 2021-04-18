@@ -20,7 +20,7 @@ class GameResource extends JsonResource
             'title' => $this->title,
             'image_path' => $this->image_path ? Storage::url($this->image_path): '',
             'capture_count' => 0,
-            'playthrough_count' => 0,
+            'playthrough_count' => $this->playthroughs->count(),
             'playthroughs' => GamePlaythroughResource::collection($this->whenLoaded('playthroughs')),
         ];
     }

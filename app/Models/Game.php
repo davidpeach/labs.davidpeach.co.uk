@@ -14,6 +14,10 @@ class Game extends Model
         'image_path',
     ];
 
+    protected $with = [
+        'playthroughs',
+    ];
+
     public function playthroughs()
     {
         return $this->morphMany(GamePlaythrough::class, 'activityable');

@@ -5,9 +5,11 @@ use App\Http\Controllers\Api\AlbumCoverController;
 use App\Http\Controllers\Api\AlbumJamController;
 use App\Http\Controllers\Api\ArtistController;
 use App\Http\Controllers\Api\GameController;
+use App\Http\Controllers\Api\GameCoverController;
 use App\Http\Controllers\Api\GamePlaythroughController;
 use App\Http\Controllers\Api\GamePlaythroughSessionController;
 use App\Http\Controllers\Api\JamsController;
+use App\Http\Controllers\Api\PlaythroughController;
 use App\Http\Controllers\Api\SongController;
 use App\Http\Controllers\Api\SongJamController;
 use Illuminate\Http\Request;
@@ -46,9 +48,11 @@ Route::middleware('auth:sanctum')->post('artists', [ArtistController::class, 'st
 Route::get('games/{game}/playthroughs/{playthrough}', [GamePlaythroughController::class, 'show']);
 Route::get('games', [GameController::class, 'index']);
 Route::middleware('auth:sanctum')->post('games', [GameController::class, 'store']);
-
+Route::middleware('auth:sanctum')->patch('games/{game}', [GameController::class, 'update']);
+Route::middleware('auth:sanctum')->post('games/{game}/cover', [GameCoverController::class, 'store']);
 Route::middleware('auth:sanctum')->post('games/{game}/playthroughs/{playthrough}/sessions', [GamePlaythroughSessionController::class, 'store']);
 
+Route::get('playthroughs', [PlaythroughController::class, 'index']);
 
 
 Route::middleware('web')->post('login', function (Request $request) {

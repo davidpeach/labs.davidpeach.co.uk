@@ -38,11 +38,18 @@ class GameController extends Controller
         ];
 
         if ($request->has('image')) {
-            $data['image_path'] = $request->file('image')->storePublicly('covers');
+            $data['image_path'] = $request->file('image')->storePublicly('game_covers');
         }
 
         $newGame = Game::create($data);
 
         return new GameResource($newGame);
+    }
+
+    public function update(Game $game, Request $request)
+    {
+        $game->update([
+            'title' => $request->title,
+        ]);
     }
 }

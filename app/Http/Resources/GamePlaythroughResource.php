@@ -24,6 +24,7 @@ class GamePlaythroughResource extends JsonResource
             'playtime_range' => $this->determine_playtime_range,
             'last_played_at' => $this->last_played_at->format('jS F Y g:ia'),
             'is_complete' => $this->is_complete,
+            'image_path' => $this->image_path ? Storage::url($this->image_path): '',
         ];
     }
 }

@@ -33,18 +33,41 @@ class GamesTest extends TestCase
 
         $this->assertDatabaseHas('games', [
             'title' => 'The Last of Us',
-            'image_path' => 'covers/' . $image->hashName(),
+            'image_path' => 'game_covers/' . $image->hashName(),
         ]);
 
         $response->assertJson(['data' => [
             'id' => 1,
             'title' => 'The Last of Us',
-            'image_path' => '/storage/covers/' . $image->hashName(),
+            'image_path' => '/storage/game_covers/' . $image->hashName(),
         ]]);
 
-        $this->assertEquals('covers/' . $image->hashName(), Game::first()->image_path);
+        $this->assertEquals('game_covers/' . $image->hashName(), Game::first()->image_path);
 
-        Storage::disk('public')->assertExists('covers/' . $image->hashName());
+        Storage::disk('public')->assertExists('game_covers/' . $image->hashName());
+    }
+
+    /** @test */
+    public function a_game_can_be_updated_by_me()
+    {
+        $this->w();
+        $this->be(User::factory()->create());
+
+        $game = Game::factory()->create([
+            'title' => 'The Last of Us part 2',
+        ]);
+
+        $this->json('PATCH', 'api/games/' . $game->id, [
+            'title' => 'Resident Evil 8',
+        ]);
+
+        $this->assertDatabaseHas('games', [
+            'title' => 'Resident Evil 8',
+        ]);
+
+        $this->assertDatabaseMissing('games', [
+            'title' => 'The Last of Us part 2',
+        ]);
     }
 
     /** @test */
@@ -52,6 +75,43 @@ class GamesTest extends TestCase
     {
         $response = $this->json('POST', 'api/games', [
             'title' => 'The Last of Us',
+        ]);
+
+        $response->assertUnauthorized();
+    }
+
+    /** @test */
+    public function artwork_for_a_game_can_be_added_by_only_me()
+    {
+        $this->be(User::factory()->create());
+
+        Storage::fake('public');
+
+        $game = Game::factory()->create([
+            'title' => 'The Last of Us',
+        ]);
+
+        $image = UploadedFile::fake()->image('game-cover.jpg');
+
+        $this->json('POST', 'api/games/' . $game->id . '/cover', [
+            'image' => $image,
+        ]);
+
+        $this->assertEquals('game_covers/' . $image->hashName(), $game->fresh()->image_path);
+        Storage::disk('public')->assertExists('game_covers/' . $image->hashName());
+    }
+
+    /** @test */
+    public function guests_cannot_add_artwork_for_a_game()
+    {
+        $game = Game::factory()->create([
+            'title' => 'The Last of Us',
+        ]);
+
+        $image = UploadedFile::fake()->image('game-cover.jpg');
+
+        $response = $this->json('POST', 'api/games/' . $game->id . '/cover', [
+            'image' => $image,
         ]);
 
         $response->assertUnauthorized();
@@ -94,7 +154,7 @@ class GamesTest extends TestCase
             [
                 'title' => 'Horizon Zero Dawn',
                 'capture_count' => 0,
-                'playthrough_count' => 0,
+                'playthrough_count' => 1,
                 'playthroughs' => [
                     [
                         'title' => 'Easy for photomode',
@@ -109,7 +169,7 @@ class GamesTest extends TestCase
             [
                 'title' => 'Death Stranding',
                 'capture_count' => 0,
-                'playthrough_count' => 0,
+                'playthrough_count' => 1,
                 'playthroughs' => [
                     [
                         'title' => 'First Play',
@@ -124,7 +184,7 @@ class GamesTest extends TestCase
             [
                 'title' => 'The Last of Us',
                 'capture_count' => 0,
-                'playthrough_count' => 0,
+                'playthrough_count' => 1,
                 'playthroughs' => [
                     [
                         'title' => 'Grounded mode attempt',
