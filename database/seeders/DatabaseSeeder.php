@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         	'password' => bcrypt(env('MY_PASSWORD')),
         ]);
 
-        $token = $user->createToken('testing-token');
-        \Log::info('Testing token: ' . $token->plainTextToken);
+        $this->call(JamsSeeder::class);
+        $this->call(GamesSeeder::class);
     }
 }

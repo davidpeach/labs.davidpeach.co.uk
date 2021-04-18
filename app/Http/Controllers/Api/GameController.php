@@ -31,7 +31,7 @@ class GameController extends Controller
         ];
 
         if ($request->has('image')) {
-            $data['image_path'] = $request->file('image')->store('covers', 'do_spaces');
+            $data['image_path'] = $request->file('image')->storePublicly('covers');
         }
 
         $newGame = Game::create($data);

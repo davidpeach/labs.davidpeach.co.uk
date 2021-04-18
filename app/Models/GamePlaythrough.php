@@ -69,6 +69,21 @@ class GamePlaythrough extends Activity
         return $session->finished_at;
     }
 
+    public function getDeterminePlaytimeRangeAttribute()
+    {
+        $range = '';
+
+        if (is_null($this->determine_started_at)) {
+            return 'Not yet started';
+        }
+
+        if (is_null($this->determine_finished_at)) {
+            return 'Started ' . $this->determine_started_at->format('jS F Y') . ', still going.';
+        }
+
+        return $this->determine_started_at->format('jS F Y') . ' to ' . $this->determine_finished_at->format('jS F Y');
+    }
+
     /**
      * A better-named accessor for the underlying activity table column name
      * @return \Carbon\Carbon

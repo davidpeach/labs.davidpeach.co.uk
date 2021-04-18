@@ -22,7 +22,7 @@ class GamesTest extends TestCase
     {
         $this->be(User::factory()->create());
 
-        Storage::fake('do_spaces');
+        Storage::fake('public');
 
         $image = UploadedFile::fake()->image('game-cover.jpg');
 
@@ -36,13 +36,15 @@ class GamesTest extends TestCase
             'image_path' => 'covers/' . $image->hashName(),
         ]);
 
-        Storage::disk('do_spaces')->assertExists('covers/' . $image->hashName());
-
         $response->assertJson(['data' => [
             'id' => 1,
             'title' => 'The Last of Us',
-            'image_path' => 'covers/' . $image->hashName(),
+            'image_path' => '/storage/covers/' . $image->hashName(),
         ]]);
+
+        $this->assertEquals('covers/' . $image->hashName(), Game::first()->image_path);
+
+        Storage::disk('public')->assertExists('covers/' . $image->hashName());
     }
 
     /** @test */
@@ -80,7 +82,7 @@ class GamesTest extends TestCase
         ]);
         GamingSession::factory()->for($horizonPlaythrough)->create([
             'started_at' => new Carbon('15th January 2021 8pm'),
-            'finished_at' => new Carbon('15th January 2021 8pm'),
+            'finished_at' => new Carbon('16th January 2021 8pm'),
         ]);
         GamingSession::factory()->for($deathStrandingPlaythrough)->create([
             'started_at' => new Carbon('10th January 2021 8pm'),
@@ -97,7 +99,8 @@ class GamesTest extends TestCase
                     [
                         'title' => 'Easy for photomode',
                         'started_at' => '15th January 2021 8:00pm',
-                        'finished_at' => '15th January 2021 8:00pm',
+                        'finished_at' => '16th January 2021 8:00pm',
+                        'playtime_range' => '15th January 2021 to 16th January 2021',
                         'last_played_at' => '15th January 2021 8:00pm',
                         'is_complete' => true,
                     ]
@@ -112,6 +115,7 @@ class GamesTest extends TestCase
                         'title' => 'First Play',
                         'started_at' => '10th January 2021 8:00pm',
                         'finished_at' => null,
+                        'playtime_range' => 'Started 10th January 2021, still going.',
                         'last_played_at' => '10th January 2021 8:00pm',
                         'is_complete' => false,
                     ]
@@ -126,6 +130,7 @@ class GamesTest extends TestCase
                         'title' => 'Grounded mode attempt',
                         'started_at' => '5th January 2021 8:00pm',
                         'finished_at' => null,
+                        'playtime_range' => 'Started 5th January 2021, still going.',
                         'last_played_at' => '5th January 2021 8:00pm',
                         'is_complete' => false,
                     ]
